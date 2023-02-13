@@ -3,7 +3,7 @@
 (Vigilante inteligente atenuador de decesos)
 
 ## Proyecto Final IA y Big Data
-Repositorio donde se ubicará todo el contenido del proyecto final de IA y Big Data. Realizado por José Pérez Soler y Jesús Jiménez García.
+Repositorio donde se ubicará todo el contenido del proyecto final de IA y Big Data. Realizado por Jose Pérez Soler y Jesús Jiménez García.
 
 1. Justificación y descripción del proyecto.
 
