@@ -25,6 +25,8 @@ VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y B
 
 ## **Limpieza de datos.**
 
+[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1_Li7qOVEdDfvK9f83WUplWafxM4BSycd)
+
 ## **Exploración y visualización de los datos.**
 
 ## **Preparación de los datos para los algoritmos de Machine Learning.**
