@@ -23,6 +23,8 @@ VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y B
 
 ## **Obtención de datos.**
 
+Elaboración propia con datos extraídos del sitio web del INE:  <a href="[url_del_enlace](https://www.ine.es/index.htm)">www.ine.es</a>
+
 ## **Limpieza de datos.**
 
 [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1_Li7qOVEdDfvK9f83WUplWafxM4BSycd)
