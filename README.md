@@ -30,6 +30,11 @@ Elaboración propia con datos extraídos del sitio web del [INE 23/02/203](https
 
   Los datos se han almacenado en S3.
   
+  ![hola](https://raw.githubusercontent.com/JesusJiga/VIAD/master/Resources/S3.png)
+  
+Datos de acceso
+Al ser la cuenta de amazon perteneciente a awsacademy habrá que iniciar la sesión
+del laboratorio previamiente a su uso y estas claves tendrán que modificarse.
 
 ## **Limpieza de datos.**
 
