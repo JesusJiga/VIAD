@@ -1,0 +1,6 @@
+# Datos de acceso
+# Al ser la cuenta de amazon perteneciente a awsacademy habrá que iniciar la sesión
+# del laboratorio previamiente a su uso y estas claves tendrán que modificarse
+aws_access_key_id="ASIAYZJ3WXERTAV45IL2"
+aws_secret_access_key="fvPsm6EfYU7ysfkF+M5vF6/Cf2+KSsFMkCUf5TsZ"
+aws_session_token="FwoGZXIvYXdzEHIaDBiBA3ePRYHx17K8nyLIAQiHSNwICghVQFhzkFee/YMQ3Y1zsrYCMv991wOdCAfHyRNbjZSOb7CVMSe1mSJwrUXKPUnoHUkTYlUhWP+8ENXqNaYZ25D4Wg/2bD7vUfViSXF/7rFymHuishBIYcpYU3JoBc9Pq/KEAurVqHp4l+6BheueXpy2DSBVefE2x0bYJAXRDkR+5TPDPdtGC5ThBggtZqEiNxXMPbJMNrdNpIIHxPuwS8bZs2zyj/OBE2BoYHsWYwWYPindlw1UQsGWaTFcMA2V89x8KMewmKAGMi0QGg6m/kC6ic/iwrSXf+5MPfFsqDPpYYkZMv33L3FVsB24PqA+XmdBZTXuPwM="
