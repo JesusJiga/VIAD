@@ -1,25 +1,9 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import boto3
-import AWS_config
-
-# session = boto3.Session(AWS_config.aws_access_key_id, AWS_config.aws_secret_access_key, AWS_config.aws_session_token)
-# s3 = session.client('s3', region_name='us-east-1')
-
-s3 = boto3.client('s3', aws_access_key_id=AWS_config.aws_access_key_id, aws_secret_access_key=AWS_config.aws_secret_access_key, aws_session_token=AWS_config.aws_session_token, region_name='us-east-1')
-
-bucket_name = 'viad'
-folder_path = 'models/'
-filename = 'both_genders_model.pkl'
-
-full_path = folder_path + filename
-
-object = s3.get_object(Bucket=bucket_name, Key=full_path)
-file_content = object['Body'].read()
 
 # Unpickle classifier
-both_genders_model = joblib.load(file_content)
+both_genders_model = joblib.load("both_genders_model.pkl")
 
 st.title("¡Bienvenido a VIAD!")
 
