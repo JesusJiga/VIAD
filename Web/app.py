@@ -15,12 +15,22 @@ st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles 
 
 year = st.slider('Seleccione un año', min_value=2015, max_value=2050, value=2023, step=1, format="%d")
 
+community = st.selectbox("Seleccione una comunidad", ('Andalucía', 'Extremadura'))
+
+province = st.selectbox("Seleccione una provincia", ('Málaga', 'Jaén'))
+
+cause = st.selectbox("Seleccione una causa de muerte", ('Eres muy malo'))
+
+age = st.selectbox("Seleccione una grupo de edad", ('0 -5', '6 -10'))
+
 # Store inputs into dataframe
 X = pd.DataFrame([
-    [17, 45, 1, 0, year]],
+    [community, province, cause, age, year]],
     columns = ["Community", "Province", "Cause", "Age", "Year"])
 
-# Get prediction
-prediction = both_genders_model.predict(X)[0]
+if st.button('Comprobar'):
 
-st.write(f"The fish's weight is around {prediction} gr")
+    # Get prediction
+    prediction = both_genders_model.predict(X)[0]
+
+    st.write(f"The fish's weight is around {prediction} gr")
