@@ -7,9 +7,7 @@ import pymongo
 from urllib.parse import quote_plus
 import dictionaries
 
-url = f"mongodb+srv://JiGa:{os.getenv('DB_PASSWORD')}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority"
-st.write(url)
-client = pymongo.MongoClient(url)
+client = pymongo.MongoClient(f"mongodb+srv://JiGa:{os.getenv('DB_PASSWORD')}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
 database = "VIAD"
 collection = "CausesDeath"
