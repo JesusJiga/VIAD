@@ -1,12 +1,15 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import os
 import pymongo
 #from pymongo import MongoClient
 from urllib.parse import quote_plus
 import dictionaries
 
-client = pymongo.MongoClient(f"mongodb+srv://JiGa:{st.secrets['DB_PASSWORD']}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
+url = f"mongodb+srv://JiGa:{os.getenv('DB_PASSWORD')}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority"
+st.write(url)
+client = pymongo.MongoClient(url)
 
 database = "VIAD"
 collection = "CausesDeath"
