@@ -6,7 +6,7 @@ import pymongo
 from urllib.parse import quote_plus
 import dictionaries
 
-client = pymongo.MongoClient(f"mongodb+srv://JiGa:{DB_USERNAME}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
+client = pymongo.MongoClient(f"mongodb+srv://JiGa:{st.secrets['DB_PASSWORD']}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
 database = "VIAD"
 collection = "CausesDeath"
