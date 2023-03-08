@@ -3,8 +3,6 @@ import pandas as pd
 import joblib
 import os
 import pymongo
-#from pymongo import MongoClient
-from urllib.parse import quote_plus
 import dictionaries
 
 client = pymongo.MongoClient(f"mongodb+srv://JiGa:{os.getenv('DB_PASSWORD')}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
@@ -24,9 +22,9 @@ for i in result:
         break
 
 # Unpickle classifier
-both_genders_model = joblib.load("/Models/both_genders_model.pkl")
-men_model = joblib.load("/Models/men_model.pkl")
-women_model = joblib.load("/Models/women_model.pkl")
+both_genders_model = joblib.load("both_genders_model.pkl")
+men_model = joblib.load("men_model.pkl")
+women_model = joblib.load("women_model.pkl")
 
 st.title("¡Bienvenido a VIAD!")
 
