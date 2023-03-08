@@ -1,4 +1,14 @@
-provinces = {
+def order_dictionay(dictionary):
+    sorted_keys = sorted(dictionary.keys())
+
+    # Crear un nuevo diccionario ordenado
+    sorted_dictionary = {}
+    for sorted_key in sorted_keys:
+        sorted_dictionary[sorted_key] = dictionary[sorted_key]
+    
+    return sorted_dictionary
+
+provinces_origin = {
         'Huesca': 1,
         'Teruel': 2,
         'Zaragoza': 3,
@@ -53,7 +63,9 @@ provinces = {
         'Valencia/València': 52
     }
 
-communities = {
+provinces = order_dictionay(provinces_origin)
+
+communities_origin = {
         'Aragon': 1,
         'Melilla': 2,
         'Baleares': 3,
@@ -74,6 +86,8 @@ communities = {
         'Ceuta': 18,
         'Valencia': 19
     }
+
+communities = order_dictionay(communities_origin)
 
 ages = {
         'Menores de 1 año': 1,

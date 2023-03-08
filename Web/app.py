@@ -1,9 +1,31 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import pymongo
+#from pymongo import MongoClient
+from urllib.parse import quote_plus
+import dictionaries
+
+client = pymongo.MongoClient(f"mongodb+srv://JiGa:{DB_USERNAME}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
+
+database = "VIAD"
+collection = "CausesDeath"
+
+mongodb_viad = client[database][collection]
+
+result = mongodb_viad.find()
+# print results
+j=0
+for i in result:
+    st.write(i)
+    j+=1
+    if j >=6:
+        break
 
 # Unpickle classifier
-both_genders_model = joblib.load("both_genders_model.pkl")
+both_genders_model = joblib.load("/Models/both_genders_model.pkl")
+men_model = joblib.load("/Models/men_model.pkl")
+women_model = joblib.load("/Models/women_model.pkl")
 
 st.title("¡Bienvenido a VIAD!")
 
@@ -15,18 +37,15 @@ st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles 
 
 year = st.slider('Seleccione un año', min_value=2015, max_value=2050, value=2023, step=1, format="%d")
 
-community = st.selectbox("Seleccione una comunidad", ('Andalucía', 'Extremadura'))
-
-province = st.selectbox("Seleccione una provincia", ('Málaga', 'Jaén'))
-
-cause = st.selectbox("Seleccione una causa de muerte", ('Eres muy malo'))
-
-age = st.selectbox("Seleccione una grupo de edad", ('0 -5', '6 -10'))
+community = st.selectbox("Seleccione una comunidad", (dictionaries.communities))
+province = st.selectbox("Seleccione una provincia", (dictionaries.provinces))
+disease = st.selectbox("Seleccione una causa de muerte", (dictionaries.diseases))
+age = st.selectbox("Seleccione una grupo de edad", (dictionaries.ages))
 
 # Store inputs into dataframe
 X = pd.DataFrame([
-    [community, province, cause, age, year]],
-    columns = ["Community", "Province", "Cause", "Age", "Year"])
+    [community, province, disease, age, year]],
+    columns = ["Community", "Province", "Disease", "Age", "Year"])
 
 if st.button('Comprobar'):
 
