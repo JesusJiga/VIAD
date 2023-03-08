@@ -3,6 +3,7 @@ def order_dictionay(dictionary):
 
     # Crear un nuevo diccionario ordenado
     sorted_dictionary = {}
+    sorted_dictionary['Todas'] = 0
     for sorted_key in sorted_keys:
         sorted_dictionary[sorted_key] = dictionary[sorted_key]
     
@@ -89,7 +90,14 @@ communities_origin = {
 
 communities = order_dictionay(communities_origin)
 
+genders = {
+    'Ambos' : 0,
+    'Hombres' : 1,
+    'Mujeres' : 2
+}
+
 ages = {
+        'Todas' : 0,
         'Menores de 1 año': 1,
         'De 1 a 14 años': 2,
         'De 15 a 29 años': 3,
@@ -109,6 +117,7 @@ ages = {
 }
 
 diseases = {
+        'Todas' : 0,
         '001 Enfermedades infecciosas intestinales' : 1,
         '002 Tuberculosis y sus efectos tardíos' : 2,
         '003 Enfermedad meningocócica' : 3, 
