@@ -15,20 +15,21 @@ collection = "CausesDeath"
 
 mongodb_viad = client[database][collection]
 
-result = mongodb_viad.find()
+# result = mongodb_viad.find()
 
-# print results
-j=0
-for i in result:
-    st.write(i)
-    j+=1
-    if j >=6:
-        break
+# # print results
+# j=0
+# for i in result:
+#     st.write(i)
+#     j+=1
+#     if j >=6:
+#         break
 
-import requests
-
+import socket
+host=socket.gethostbyname(socket.gethostname())
+st.text(host)
 # Unpickle classifier
-if requests.get('http://checkip.amazonaws.com').text.strip():
+if host:
     path = path_localhost
 else:
     path = path_streamlit
