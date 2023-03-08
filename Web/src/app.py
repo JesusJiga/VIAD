@@ -23,7 +23,7 @@ for i in result:
         break
 
 # Unpickle classifier
-both_genders_model = joblib.load("both_genders_model.pkl")
+both_genders_model = joblib.load("Web/src/both_genders_model.pkl")
 men_model = joblib.load("men_model.pkl")
 women_model = joblib.load("women_model.pkl")
 
