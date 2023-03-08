@@ -29,7 +29,7 @@ import socket
 host=socket.gethostbyname(socket.gethostname())
 st.text(host)
 # Unpickle classifier
-if host:
+if host == "172.27.0.2":
     path = path_localhost
 else:
     path = path_streamlit
