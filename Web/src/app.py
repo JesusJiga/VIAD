@@ -5,6 +5,9 @@ import os
 import pymongo
 import dictionaries
 
+path_streamlit = "Web/src/"
+path_localhost = ""
+
 client = pymongo.MongoClient(f"mongodb+srv://JiGa:{st.secrets['DB_PASSWORD']}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
 database = "VIAD"
@@ -22,10 +25,17 @@ for i in result:
     if j >=6:
         break
 
+import requests
+
 # Unpickle classifier
-both_genders_model = joblib.load("Web/src/both_genders_model.pkl")
-men_model = joblib.load("men_model.pkl")
-women_model = joblib.load("women_model.pkl")
+if requests.get('http://checkip.amazonaws.com').text.strip():
+    path = path_localhost
+else:
+    path = path_streamlit
+
+both_genders_model = joblib.load(path + "both_genders_model.pkl")
+men_model = joblib.load(path + "men_model.pkl")
+women_model = joblib.load(path + "women_model.pkl")
 
 st.title("¡Bienvenido a VIAD!")
 
