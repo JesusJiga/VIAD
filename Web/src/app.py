@@ -5,7 +5,7 @@ import os
 import pymongo
 import dictionaries
 
-client = pymongo.MongoClient(f"mongodb+srv://JiGa:{os.getenv('DB_PASSWORD')}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
+client = pymongo.MongoClient(f"mongodb+srv://JiGa:{st.secrets['DB_PASSWORD']}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
 database = "VIAD"
 collection = "CausesDeath"
@@ -13,6 +13,7 @@ collection = "CausesDeath"
 mongodb_viad = client[database][collection]
 
 result = mongodb_viad.find()
+
 # print results
 j=0
 for i in result:
