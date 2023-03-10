@@ -1,11 +1,17 @@
 import pymongo
-import streamlit as st
+import pandas as pd
 
-@st.cache_resource
-def get_conection(key):
-    client = pymongo.MongoClient(f"mongodb+srv://JiGa:{key}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
+def start_conection(key):
+    return pymongo.MongoClient(f"mongodb+srv://JiGa:{key}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
+def get_client(conection):
     database = "VIAD"
     collection = "CausesDeath"
-    
-    return client[database][collection]
+
+    return conection[database][collection]
+
+def get_min_year(client):
+    return int(pd.Timestamp(client.find({},{'Year':True}).sort('Year', pymongo.ASCENDING).limit(1)[0]['Year']).strftime('%Y'))
+
+def get_max_year(client):
+    return int(pd.Timestamp(client.find({},{'Year':True}).sort('Year', pymongo.DESCENDING).limit(1)[0]['Year']).strftime('%Y'))

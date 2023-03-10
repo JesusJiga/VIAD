@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 from pmdarima.arima import auto_arima
-import dictionaries
 
-@st.cache_resource
 def load_csv(path):
     return pd.read_csv(path + 'causes_death_categorized.csv')
 
@@ -12,9 +10,9 @@ def __get_df_gender(dataframe, gender):
     if gender == 0:
         return (dataframe.drop(['Men', 'Women'], axis=1), "Both Genders")
     elif gender == 1:
-        return (dataframe.drop(['Both genders', 'Women'], axis=1), "Men") 
+        return (dataframe.drop(['Both Genders', 'Women'], axis=1), "Men") 
     elif gender == 2:
-        return (dataframe.drop(['Both genders', 'Men'], axis=1), "Women")
+        return (dataframe.drop(['Both Genders', 'Men'], axis=1), "Women")
     else:
         print("sexo erroneo.")
 

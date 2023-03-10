@@ -7,15 +7,38 @@ import ip_path
 import predictions
 
 # Elige el path para local o streamlit
-path = ip_path.get_path()
-# Establece la conexión con Atlas/MongoDB
-mongodb_viad = conection.get_conection(st.secrets['DB_PASSWORD'])
-#Carga el csv
-causes_death_df = predictions.load_csv(path)
+@st.cache_data
+def get_path():
+    return ip_path.get_path()
 
-# Comprobamos valores máximos y mínimos de los registros de la base de datos
-min_year = int(pd.Timestamp(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.ASCENDING).limit(1)[0]['Year']).strftime('%Y'))
-max_year = int(pd.Timestamp(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.DESCENDING).limit(1)[0]['Year']).strftime('%Y'))
+# Establece la conexión con Atlas/MongoDB
+@st.cache_resource
+def start_conection():
+    return conection.start_conection(st.secrets['DB_PASSWORD'])
+
+@st.cache_resource
+def get_client():
+    return conection.get_client(mongodb_conection)
+
+#Carga el csv
+@st.cache_data
+def load_causes_death_df():
+    return predictions.load_csv(path)
+
+# Cargamos valores máximos y mínimos de los registros de la base de datos
+@st.cache_data
+def get_min_year():
+    return conection.get_min_year(mongodb_client)
+
+@st.cache_data
+def get_max_year():
+    return conection.get_max_year(mongodb_client)
+
+# Cargamos la configuración inicial
+path = get_path()
+mongodb_conection = start_conection()
+mongodb_client = get_client()
+causes_death_df = load_causes_death_df()
 
 st.title("¡Bienvenido a VIAD!")
 
@@ -25,7 +48,7 @@ st.markdown("Tenga en cuenta de que se trata de una elaboración propia con dato
 
 st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles futuras catastrofes naturales, guerras o cualquier causa fuera de conductas normales.", unsafe_allow_html=False)
 
-year = st.slider('Seleccione un año', min_value=min_year, max_value=2050, value=2023, step=1, format="%d")
+year = st.slider('Seleccione un año', min_value=get_min_year(), max_value=2050, value=2023, step=1, format="%d")
 
 col1, col2  = st.columns(2)
 with col1:
@@ -56,7 +79,7 @@ with col2:
 if st.button('Comprobar'):
 
     #Búsqueda datos reales
-    if year <= max_year:
+    if year <= get_max_year():
 
         # TODO: Rango de años
         st.text(community)
@@ -66,7 +89,7 @@ if st.button('Comprobar'):
         if community == "Todas" or province == "Todas" or disease == "Todas" or age == "Todas": 
             st.text("ha seleccionado todas")
         else:
-            result = mongodb_viad.find(
+            result = mongodb_client.find(
                 {
                 'Year' : pd.to_datetime(year, format='%Y'),
                 'Community' : str(community_key),
@@ -83,13 +106,9 @@ if st.button('Comprobar'):
                 st.text(i['Women'])
     #Predicción
     else:
-        # st.text(community_key)
-        st.text("Para la provincia " + dictionaries.provinces[province_key] + " con código " + str(province_key))
-        st.text("y la enfermedad " + dictionaries.diseases[disease_key] + " con código " + str(disease_key))
-        st.text("y rango de edad " + dictionaries.ages[age_key] + " con código " + str(age_key))
-        st.text("en el año " + str(year))
-        st.text("para el genero " + dictionaries.genders[gender_key] + " con código " + str(gender_key))
         data = causes_death_df
         prediction = predictions.get_prediction(data, gender_key, age_key, province_key, disease_key, year)
 
+        st.write("Para la provincia de " + dictionaries.provinces[province_key] + " y la enfermedad " + dictionaries.diseases[disease_key] + " y rango de edad " + dictionaries.ages[age_key] + " en el año " + str(year) + " para el genero " + dictionaries.genders[gender_key])
+        
         st.write(f"Habrá {prediction} muertes. (Tenga en cuenta un margen de error)")
