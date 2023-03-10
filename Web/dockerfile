@@ -1,5 +1,5 @@
 FROM python:3.8
 WORKDIR /app
-RUN pip install pandas scikit-learn streamlit pymongo
+RUN pip install pandas scikit-learn streamlit pymongo pmdarima
 COPY src/. /app/
 ENTRYPOINT [ "streamlit","run","app.py" ]

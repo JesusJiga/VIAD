@@ -1,19 +1,21 @@
 import streamlit as st
 import pandas as pd
-import joblib
 import pymongo
 import dictionaries
 import conection
 import ip_path
+import predictions
 
 # Elige el path para local o streamlit
 path = ip_path.get_path()
 # Establece la conexión con Atlas/MongoDB
 mongodb_viad = conection.get_conection(st.secrets['DB_PASSWORD'])
+#Carga el csv
+causes_death_df = predictions.load_csv(path)
 
 # Comprobamos valores máximos y mínimos de los registros de la base de datos
-min_year = int(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.ASCENDING).limit(1)[0]['Year'])
-max_year = int(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.DESCENDING).limit(1)[0]['Year'])
+min_year = int(pd.Timestamp(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.ASCENDING).limit(1)[0]['Year']).strftime('%Y'))
+max_year = int(pd.Timestamp(mongodb_viad.find({},{'Year':True}).sort('Year', pymongo.DESCENDING).limit(1)[0]['Year']).strftime('%Y'))
 
 st.title("¡Bienvenido a VIAD!")
 
@@ -27,19 +29,29 @@ year = st.slider('Seleccione un año', min_value=min_year, max_value=2050, value
 
 col1, col2  = st.columns(2)
 with col1:
-    community = st.selectbox("Seleccione una comunidad", (dictionaries.communities))
+    community = st.selectbox("Seleccione una comunidad", (dictionaries.communities.values()))
+    if community in dictionaries.communities.values():
+        community_key = list(dictionaries.communities.keys())[list(dictionaries.communities.values()).index(community)]
 with col2:
-    if dictionaries.communities[community] == 0:
+    if community_key == 0:
         st.text("Todas las provincias seleccionadas")
-        province = "Todas"
+        province_key = 0
     else:        
-        province = st.selectbox("Seleccione una provincia", (dictionaries.provinces))
-disease = st.selectbox("Seleccione una causa de muerte", (dictionaries.diseases))
+        province = st.selectbox("Seleccione una provincia", (dictionaries.provinces.values()))
+        if province in dictionaries.provinces.values():
+            province_key = list(dictionaries.provinces.keys())[list(dictionaries.provinces.values()).index(province)]
+disease = st.selectbox("Seleccione una causa de muerte", (dictionaries.diseases.values()))
+if disease in dictionaries.diseases.values():
+    disease_key = list(dictionaries.diseases.keys())[list(dictionaries.diseases.values()).index(disease)]
 col1, col2  = st.columns(2)
 with col1:
-    age = st.selectbox("Seleccione una grupo de edad", (dictionaries.ages))
+    age = st.selectbox("Seleccione una grupo de edad", (dictionaries.ages.values()))
+    if age in dictionaries.ages.values():
+        age_key = list(dictionaries.ages.keys())[list(dictionaries.ages.values()).index(age)]
 with col2:
-    gender = st.selectbox("Seleccione género", (dictionaries.genders))
+    gender = st.selectbox("Seleccione género", (dictionaries.genders.values()))
+    if gender in dictionaries.genders.values():
+        gender_key = list(dictionaries.genders.keys())[list(dictionaries.genders.values()).index(gender)]
 
 if st.button('Comprobar'):
 
@@ -55,11 +67,12 @@ if st.button('Comprobar'):
             st.text("ha seleccionado todas")
         else:
             result = mongodb_viad.find(
-                {'Year' : str(year),
-                'Community' : str(dictionaries.communities[community]),
-                'Province' : str(dictionaries.provinces[province]),
-                'Disease' : str(dictionaries.diseases[disease]),
-                'Age' : str(dictionaries.ages[age])
+                {
+                'Year' : pd.to_datetime(year, format='%Y'),
+                'Community' : str(community_key),
+                'Province' : str(province_key),
+                'Disease' : str(disease_key),
+                'Age' : str(age_key)
                 })
 
             # print results
@@ -70,30 +83,13 @@ if st.button('Comprobar'):
                 st.text(i['Women'])
     #Predicción
     else:
-        # Cargamos los modelos
-        both_genders_model = joblib.load(path + "both_genders_model.pkl")
-        men_model = joblib.load(path + "men_model.pkl")
-        women_model = joblib.load(path + "women_model.pkl")
-
-        X = pd.DataFrame([
-            [
-                dictionaries.communities[community],
-                dictionaries.provinces[province],
-                dictionaries.diseases[disease],
-                dictionaries.ages[age], 
-                year
-            ]
-        ],
-        columns = ["Community", "Province", "Disease", "Age", "Year"])
-
-        prediction = ""
-        if dictionaries.genders[gender] == 0:
-            prediction = both_genders_model.predict(X)[0]
-        elif dictionaries.genders[gender] == 1:
-            prediction = men_model.predict(X)[0]
-        elif dictionaries.genders[gender] == 2:
-            prediction = women_model.predict(X)[0]
-        else:
-            st.text("Ha habido un error con el género")
+        # st.text(community_key)
+        st.text("Para la provincia " + dictionaries.provinces[province_key] + " con código " + str(province_key))
+        st.text("y la enfermedad " + dictionaries.diseases[disease_key] + " con código " + str(disease_key))
+        st.text("y rango de edad " + dictionaries.ages[age_key] + " con código " + str(age_key))
+        st.text("en el año " + str(year))
+        st.text("para el genero " + dictionaries.genders[gender_key] + " con código " + str(gender_key))
+        data = causes_death_df
+        prediction = predictions.get_prediction(data, gender_key, age_key, province_key, disease_key, year)
 
         st.write(f"Habrá {prediction} muertes. (Tenga en cuenta un margen de error)")
