@@ -29,3 +29,13 @@ th {
     font-weight: bold;
     font-size: xx-large;
 }
+
+.images {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.emoji {
+    font-size: 136px;
+}  

@@ -54,6 +54,11 @@ def set_background_image(image_file):
     unsafe_allow_html=True
     )
 
+@st.cache_data
+def transform_images(image_file):
+    with open(image_file, "rb") as image_file:
+        return base64.b64encode(image_file.read())
+
 # Carga del css
 def load_css(file_name):
     with open(file_name) as f:
@@ -84,12 +89,15 @@ if select_section == "Inicio":
     st.markdown("<h3 class='myh3'>Jesús Jiménez García. <a href='https://www.linkedin.com/in/jesusjiga/'>Linkedin</a></h3>", unsafe_allow_html=True)
 
     st.markdown("<h3 class='myh3'>Jose Pérez Soler <a href='https://www.linkedin.com/in/demiurgodigital/'>Linkedin</a><h3>", unsafe_allow_html=True)
-
-    st.markdown("Aquí podrás obtener una predicción sobre las muertes en España. Estas pueden ser en terminos generales o por causas especificas.", unsafe_allow_html=True)
-
-    st.markdown("Tenga en cuenta de que se trata de una elaboración propia con datos extraídos del sitio web del [INE](https://www.ine.es/) a fecha 23/02/203. Los resultados obtenidos son una mera orientación de lo que podría ser.", unsafe_allow_html=False)
-
-    st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles futuras catastrofes naturales, guerras o cualquier causa fuera de conductas normales.", unsafe_allow_html=False)
+    
+    st.markdown(
+        f"""
+            <div class="images">
+                <img src="data:image/png;base64,{transform_images(path + 'images/LoTechBlanco.png').decode()}" alt="logo malaga tech" width="250">
+                <img src="data:image/png;base64,{transform_images(path + 'images/LogoIABD.png').decode()}" alt="logo master ia big data" width="100">
+                <img src="data:image/png;base64,{transform_images(path + 'images/LogoAccenture.png').decode()}" alt="logo accenture" width="100">
+            </div>
+        """, unsafe_allow_html=True)
 
 elif select_section == "Estadísticas":
     st.markdown("<h1 class='myh1'>Estadísticas</h1>", unsafe_allow_html=True)
