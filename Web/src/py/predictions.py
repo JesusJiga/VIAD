@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 from pmdarima.arima import auto_arima
+from py import dictionaries
 
 def load_csv(path):
     return pd.read_csv(path + 'data/causes_death_categorized.csv')
@@ -26,8 +27,10 @@ def __get_df_age(dataframe, age):
         dataframe = dataframe.drop("Age", axis=1) 
         return dataframe
 
-def __get_df_province(dataframe, province):
+def __get_df_province(dataframe, province, community):
     if province == 0:
+        if community != 0:
+            dataframe = dataframe[dataframe["Province"].isin(dictionaries.community_provinces[community])]
         dataframe = dataframe.drop("Province", axis=1)  
         dataframe = dataframe.groupby(["Disease", "Year"]).sum().reset_index()
         return dataframe
@@ -46,10 +49,10 @@ def __get_df_disease(dataframe, disease):
         dataframe = dataframe.drop("Disease", axis=1) 
         return dataframe
 
-def get_prediction(dataframe, gender, age, province, disease, year):
+def get_prediction(dataframe, gender, age, community, province, disease, year):
     dataframe, column = __get_df_gender(dataframe, gender)
     dataframe = __get_df_age(dataframe, age)
-    dataframe = __get_df_province(dataframe, province)
+    dataframe = __get_df_province(dataframe, province, community)
     dataframe = __get_df_disease(dataframe, disease)
 
     dataframe = dataframe.set_index('Year')

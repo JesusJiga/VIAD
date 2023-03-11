@@ -1,15 +1,4 @@
-# def order_dictionay(dictionary):
-#     sorted_values = sorted(dictionary.values())
-
-#     # Crear un nuevo diccionario ordenado
-#     sorted_dictionary = {}
-#     sorted_dictionary['Todas'] = 0
-#     for sorted_value in sorted_values:
-#         sorted_dictionary[sorted_key] = dictionary[sorted_key]
-    
-#     return sorted_dictionary
-
-provinces = {
+provinces_origin = {
         1 : 'Huesca',
         2 : 'Teruel',
         3 : 'Zaragoza',
@@ -46,7 +35,7 @@ provinces = {
         34 : 'Soria',
         35 : 'Valladolid',
         36 : 'Zamora',
-        37 : 'Araba/Alava',
+        37 : 'Alava',
         38 : 'Bizkaia',
         39 : 'Gipuzkoa',
         40 : 'Palmas, Las',
@@ -59,36 +48,62 @@ provinces = {
         47 : 'Lleida',
         48 : 'Tarragona',
         49 : 'Ceuta',
-        50 : 'Alicante/Alacant',
-        51 : 'Castellón/Castelló',
-        52 : 'Valencia/València'
+        50 : 'Alicante',
+        51 : 'Castellón',
+        52 : 'Valencia'
     }
+
+provinces = dict(sorted(provinces_origin.items(), key=lambda x: x[1]))
 
 #provinces = order_dictionay(provinces_origin)
 
-communities = {
-        1 : 'Aragon',
+communities_origin = {
+        1 : 'Aragón',
         2 : 'Melilla',
-        3 : 'Baleares',
+        3 : 'Baleares, Islas',
         4 : 'Navarra',
-        5 : 'CastillaMancha',
+        5 : 'Castilla la Mancha',
         6 : 'Asturias',
         7 : 'Cantabria',
-        8 : 'Andalucia',
+        8 : 'Andalucía',
         9 : 'Extremadura',
         10 : 'Galicia',
-        11 : 'CastillaLeon',
-        12 : 'PaisVasco',
+        11 : 'Castilla y León',
+        12 : 'País Vasco',
         13 : 'Canarias',
-        14 : 'Rioja',
+        14 : 'Rioja. La',
         15 : 'Madrid',
         16 : 'Murcia',
-        17 : 'Cataluna',
+        17 : 'Cataluña',
         18 : 'Ceuta',
         19 : 'Valencia'
     }
 
-#communities = order_dictionay(communities_origin)
+communities_origin = sorted(communities_origin.items(), key=lambda x: x[1])
+communities_origin.insert(0, (0, 'Todas'))
+communities = dict(communities_origin)
+
+community_provinces = {
+    1 : [1, 2, 3],
+    2 : [4],
+    3 : [5],
+    4 : [6],
+    5 : [8, 9, 10, 10, 11],
+    6 : [12],
+    7 : [13],
+    8 : [14, 15, 16, 17, 18, 19, 20, 21],
+    9 : [22, 23],
+    10 : [24, 25, 26, 27],
+    11 : [28, 29, 30, 31, 32, 33, 34, 35, 36],
+    12 : [37, 38, 39],
+    13 : [40, 41],
+    14 : [42],
+    15 : [43],
+    16 : [44],
+    17 : [45, 46, 47, 48],
+    18 : [49],
+    19 : [50, 51, 52],
+}
 
 genders = {
     0 : 'Ambos sexos',

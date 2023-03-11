@@ -107,26 +107,38 @@ elif select_section == "Datos":
     year = st.slider('Seleccione un año', min_value=get_min_year(), max_value=2050, value=2023, step=1, format="%d")
 
     col1, col2  = st.columns(2)
+
     with col1:
         community = st.selectbox("Seleccione una comunidad", (dictionaries.communities.values()))
         if community in dictionaries.communities.values():
             community_key = list(dictionaries.communities.keys())[list(dictionaries.communities.values()).index(community)]
+
     with col2:
         if community_key == 0:
             st.text("Todas las provincias seleccionadas")
             province_key = 0
         else:        
-            province = st.selectbox("Seleccione una provincia", (dictionaries.provinces.values()))
-            if province in dictionaries.provinces.values():
+            provinces_in_community = dictionaries.community_provinces[community_key]
+            provinces_dict = { 0 : 'Todas'}
+            for province_id in provinces_in_community:
+                provinces_dict[province_id] = dictionaries.provinces[province_id]
+            province = st.selectbox("Seleccione una provincia", provinces_dict.values())
+            if province == "Todas":
+                province_key = 0
+            elif province in dictionaries.provinces.values():
                 province_key = list(dictionaries.provinces.keys())[list(dictionaries.provinces.values()).index(province)]
+
     disease = st.selectbox("Seleccione una causa de muerte", (dictionaries.diseases.values()))
     if disease in dictionaries.diseases.values():
         disease_key = list(dictionaries.diseases.keys())[list(dictionaries.diseases.values()).index(disease)]
+
     col1, col2  = st.columns(2)
+
     with col1:
         age = st.selectbox("Seleccione una grupo de edad", (dictionaries.ages.values()))
         if age in dictionaries.ages.values():
             age_key = list(dictionaries.ages.keys())[list(dictionaries.ages.values()).index(age)]
+
     with col2:
         gender = st.selectbox("Seleccione género", (dictionaries.genders.values()))
         if gender in dictionaries.genders.values():
@@ -137,30 +149,50 @@ elif select_section == "Datos":
         #Búsqueda datos reales
         if year <= get_max_year():
 
+            year = str(pd.to_datetime(year, format='%Y')).split(sep=' ')[0]
             # TODO: Rango de años
 
-            st.write("Ha seleccionado la comunidad de " + dictionaries.communities[community_key] + ", la provincia " + dictionaries.provinces[province_key] + ", la enfermedad " + dictionaries.diseases[disease_key] + ", rango de edad " + dictionaries.ages[age_key] + " para el año " + str(year) + " y " + dictionaries.genders[gender_key])
+            st.write("Los datos siguientes son los resultados de su consulta.")
+            st.write("En este caso los datos obtenidos son reales según los datos públicos de la página oficial del Instituto Nacional de Estadística.")
 
-            result = mongodb_client.find(
-                {
-                'Year' : pd.to_datetime(year, format='%Y'),
-                'Community' : str(community_key),
-                'Province' : str(province_key),
-                'Disease' : str(disease_key),
-                'Age' : str(age_key)
-                })
+            cursor, query = conection.get_historical_data(mongodb_client, year, community_key, province_key, disease_key, age_key)
 
-            # print results
-            for i in result:
-                st.text(i['Year']) 
-                st.text(i['Both Genders'])
-                st.text(i['Men'])
-                st.text(i['Women'])
+            gender_column_name = ""
+            # Se define la cabecera personalizada 
+            if gender_key == 0:
+                gender_column_name = 'Both Genders'
+                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+            elif gender_key == 1:
+                gender_column_name = 'Men'
+                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+            elif gender_key == 2:
+                gender_column_name = 'Women'
+                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+
+            data = []
+
+            # iteramos sobre el cursor y se agregan los valores a la lista
+            for document in cursor:
+                row = [
+                    str(document['Year']).split(sep='-')[0],
+                    dictionaries.provinces[int(document['Province'])],
+                    dictionaries.diseases[int(document['Disease'])],
+                    dictionaries.ages[int(document['Age'])],
+                    document[gender_column_name]
+                ]
+                data.append(row)
+
+            # Se crea el dataframe con los datos y las cabeceras personalizadas
+            df = pd.DataFrame(data, columns=headers)
+
+            # mostramos por pantalla
+            st.table(df)
+
         #Predicción
         else:
             data = causes_death_df.copy()
-            prediction = predictions.get_prediction(data, gender_key, age_key, province_key, disease_key, year)
-
-            st.write("Para la provincia de " + dictionaries.provinces[province_key] + " y la enfermedad " + dictionaries.diseases[disease_key] + " y rango de edad " + dictionaries.ages[age_key] + " en el año " + str(year) + " para el genero " + dictionaries.genders[gender_key])
-            
-            st.write(f"Habrá {prediction} muertes. (Tenga en cuenta un margen de error)")
+            prediction = predictions.get_prediction(data, gender_key, age_key, community_key, province_key, disease_key, year)
+          
+            st.write(f"Para su consulta hay una predicción de que habrá <span class='neg_mark'>{abs(prediction)}</span> muertes.", unsafe_allow_html=True)
+            st.write("Siempre tenga en cuenta un margen de error y que son predicciones a partir de los datos registrados en bases de datos públicas oficiales.")
+            st.write("El resultado no tienen ninguna validez legal y es meramente orientativa.")
