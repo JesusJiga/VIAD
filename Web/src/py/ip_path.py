@@ -1,5 +1,4 @@
 import socket
-import streamlit as st
 
 path_streamlit = "Web/src/"
 path_localhost = ""

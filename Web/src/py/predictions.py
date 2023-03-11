@@ -4,7 +4,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from pmdarima.arima import auto_arima
 
 def load_csv(path):
-    return pd.read_csv(path + 'causes_death_categorized.csv')
+    return pd.read_csv(path + 'data/causes_death_categorized.csv')
 
 def __get_df_gender(dataframe, gender):
     if gender == 0:
