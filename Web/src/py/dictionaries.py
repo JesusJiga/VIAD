@@ -91,7 +91,7 @@ communities = {
 #communities = order_dictionay(communities_origin)
 
 genders = {
-    0 : 'Ambos',
+    0 : 'Ambos sexos',
     1 : 'Hombres',
     2 : 'Mujeres'
 }

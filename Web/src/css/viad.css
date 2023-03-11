@@ -1,0 +1,17 @@
+a:link, a:visited, a:active {
+    text-decoration:none;
+    color:#3ED5C4;
+}
+
+.myh1 {
+    color:#00FFFF;
+    text-align: center;
+}
+
+.myh2 {
+    text-align: center;
+}
+
+.myh3 {
+    text-align: center;
+}

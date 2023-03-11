@@ -15,3 +15,9 @@ def get_min_year(client):
 
 def get_max_year(client):
     return int(pd.Timestamp(client.find({},{'Year':True}).sort('Year', pymongo.DESCENDING).limit(1)[0]['Year']).strftime('%Y'))
+
+def get_historical_data(client, year, community, province, disease, age, gender):
+    
+    query = ""
+
+    return client.find(query)

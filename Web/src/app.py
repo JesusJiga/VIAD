@@ -36,6 +36,7 @@ def get_min_year():
 def get_max_year():
     return conection.get_max_year(mongodb_client)
 
+# Carga de la imagen de fondo
 @st.cache_data
 def set_background_image(image_file):
     extension = image_file.split(sep=".")[1]
@@ -53,6 +54,11 @@ def set_background_image(image_file):
     unsafe_allow_html=True
     )
 
+# Carga del css
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 ########## Configuración inicial ##########
 
 st.set_page_config(page_title="VIAD", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
@@ -61,31 +67,23 @@ path = get_path()
 mongodb_conection = start_conection()
 mongodb_client = get_client()
 causes_death_df = load_causes_death_df()
-set_background_image(path + 'images/3.jpg')
+
+load_css(path + 'css/viad.css')
+set_background_image(path + 'images/background.jpg')
 
 ########## WEB ##########
 
-select_section = st.sidebar.selectbox(
-    ":female-doctor: VIAD :male-doctor:",
-    ("Inicio", "Estadísticas", "Datos")
-)
-
-st.markdown(f"""<style type="text/css">
-        a:link, a:visited, a:active {{
-            text-decoration:none;
-            color:#356584;
-        }}
-    </style>""", unsafe_allow_html=True)
+select_section = st.sidebar.selectbox(":female-doctor: VIAD :male-doctor:",("Inicio", "Estadísticas", "Datos"))
 
 if select_section == "Inicio":
 
-    st.markdown("<h1 style='text-align: center; color: #3ED5C4'>¡Bienvenido a VIAD!</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='myh1'>¡Bienvenido a VIAD!</h1>", unsafe_allow_html=True)
 
-    st.markdown("<h2 style='text-align: center;'>Trabajo de fin de master de IA y Big Data</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='myh2'>Trabajo de fin de master de IA y Big Data</h2>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center;'>Jesús Jiménez García. <a href='https://www.linkedin.com/in/jesusjiga/'>Linkedin</a></h3>", unsafe_allow_html=True)
+    st.markdown("<h3 class='myh3'>Jesús Jiménez García. <a href='https://www.linkedin.com/in/jesusjiga/'>Linkedin</a></h3>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center;'>Jose Pérez Soler <a href='https://www.linkedin.com/in/demiurgodigital/'>Linkedin</a><h3>", unsafe_allow_html=True)
+    st.markdown("<h3 class='myh3'>Jose Pérez Soler <a href='https://www.linkedin.com/in/demiurgodigital/'>Linkedin</a><h3>", unsafe_allow_html=True)
 
     st.markdown("Aquí podrás obtener una predicción sobre las muertes en España. Estas pueden ser en terminos generales o por causas especificas.", unsafe_allow_html=True)
 
@@ -94,11 +92,11 @@ if select_section == "Inicio":
     st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles futuras catastrofes naturales, guerras o cualquier causa fuera de conductas normales.", unsafe_allow_html=False)
 
 elif select_section == "Estadísticas":
-    st.markdown("<h1 style='text-align: center; color: #3ED5C4'>Estadísticas</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='myh1'>Estadísticas</h1>", unsafe_allow_html=True)
 
 elif select_section == "Datos":
 
-    st.markdown("<h1 style='text-align: center; color: #3ED5C4'>Consulta de datos</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='myh1'>Consulta de datos</h1>", unsafe_allow_html=True)
 
     st.markdown("Aquí podrás obtener una predicción sobre las muertes en España. Estas pueden ser en terminos generales o por causas especificas.", unsafe_allow_html=True)
 
@@ -141,26 +139,23 @@ elif select_section == "Datos":
 
             # TODO: Rango de años
 
-            st.write("Ha seleccionado la comunidad de " + dictionaries.provinces[province_key] + ", la provincia " + dictionaries.provinces[province_key] + ", la enfermedad " + dictionaries.diseases[disease_key] + ", rango de edad " + dictionaries.ages[age_key] + " para el año " + str(year) + " y " + dictionaries.genders[gender_key])
+            st.write("Ha seleccionado la comunidad de " + dictionaries.communities[community_key] + ", la provincia " + dictionaries.provinces[province_key] + ", la enfermedad " + dictionaries.diseases[disease_key] + ", rango de edad " + dictionaries.ages[age_key] + " para el año " + str(year) + " y " + dictionaries.genders[gender_key])
 
-            if community == "Todas" or province == "Todas" or disease == "Todas" or age == "Todas": 
-                st.text("ha seleccionado todas")
-            else:
-                result = mongodb_client.find(
-                    {
-                    'Year' : pd.to_datetime(year, format='%Y'),
-                    'Community' : str(community_key),
-                    'Province' : str(province_key),
-                    'Disease' : str(disease_key),
-                    'Age' : str(age_key)
-                    })
+            result = mongodb_client.find(
+                {
+                'Year' : pd.to_datetime(year, format='%Y'),
+                'Community' : str(community_key),
+                'Province' : str(province_key),
+                'Disease' : str(disease_key),
+                'Age' : str(age_key)
+                })
 
-                # print results
-                for i in result:
-                    st.text(i['Year']) 
-                    st.text(i['Both Genders'])
-                    st.text(i['Men'])
-                    st.text(i['Women'])
+            # print results
+            for i in result:
+                st.text(i['Year']) 
+                st.text(i['Both Genders'])
+                st.text(i['Men'])
+                st.text(i['Women'])
         #Predicción
         else:
             data = causes_death_df.copy()
