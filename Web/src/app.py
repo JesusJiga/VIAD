@@ -61,7 +61,7 @@ path = get_path()
 mongodb_conection = start_conection()
 mongodb_client = get_client()
 causes_death_df = load_causes_death_df()
-set_background_image('fondo.jpg')
+set_background_image(path + 'fondo.jpg')
 
 ########## WEB ##########
 
@@ -70,9 +70,22 @@ select_section = st.sidebar.selectbox(
     ("Home", "Linnear Regression", "ARIMA")
 )
 
+st.markdown(f"""<style type="text/css">
+        a:link, a:visited, a:active {{
+            text-decoration:none;
+            color:#356584;
+        }}
+    </style>""", unsafe_allow_html=True)
+
 if select_section == "Home":
 
     st.markdown("<h1 style='text-align: center; color: #3ED5C4'>¡Bienvenido a VIAD!</h1>", unsafe_allow_html=True)
+
+    st.markdown("<h2 style='text-align: center;'>Trabajo de fin de master de IA y Big Data</h2>", unsafe_allow_html=True)
+
+    st.markdown("<h3 style='text-align: center;'>Jesús Jiménez García. <a href='https://www.linkedin.com/in/jesusjiga/'>Linkedin</a></h3>", unsafe_allow_html=True)
+
+    st.markdown("<h3 style='text-align: center;'>Jose Pérez Soler <a href='https://www.linkedin.com/in/demiurgodigital/'>Linkedin</a><h3>", unsafe_allow_html=True)
 
     st.markdown("Aquí podrás obtener una predicción sobre las muertes en España. Estas pueden ser en terminos generales o por causas especificas.", unsafe_allow_html=True)
 
