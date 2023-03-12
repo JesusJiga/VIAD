@@ -38,7 +38,7 @@ del laboratorio previamiente a su uso y estas claves tendrán que modificarse.
 
 ## **Limpieza de datos.**
 
-[![Open In Collab](https://colab.research.google.com/drive/1zsp8nuiLN9127ZI_bDfBBajlQ5441-Wd)
+[![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1zsp8nuiLN9127ZI_bDfBBajlQ5441-Wd)
 
 ## **Exploración y visualización de los datos.**
 
