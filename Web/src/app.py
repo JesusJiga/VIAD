@@ -48,7 +48,6 @@ def get_total_men_by_year():
 def get_total_both_by_province():
     return conection.get_total_both_by_province(mongodb_db_collection)
 
-
 # Carga de la imagen de fondo
 @st.cache_data
 def set_background_image(image_file):
@@ -95,7 +94,7 @@ set_background_image(path + 'images/background.jpg')
 
 ########## WEB ##########
 
-select_section = st.sidebar.selectbox(":female-doctor: VIAD :male-doctor:",("Inicio", "Estadísticas", "Datos"))
+select_section = st.sidebar.selectbox(":female-doctor: VIAD :male-doctor:",("Inicio", "Estadísticas", "Datos", "Chatbot: Monath"))
 
 if select_section == "Inicio":
 
@@ -139,6 +138,19 @@ elif select_section == "Estadísticas":
     # Graficar
     st.line_chart(df_merged)
     st.markdown("Representación de las muertes totales a lo largo de los años")
+
+    st.markdown(
+        f"""
+            <div class="images">
+                <img src="data:image/png;base64,{transform_images(path + 'images/pltDeathsYear.png').decode()}" alt="logo malaga tech" width="700">
+            </div>
+            <div class="images">
+                <img src="data:image/png;base64,{transform_images(path + 'images/pltDeathsSex2021.png').decode()}" alt="logo malaga tech" width="700">
+            </div>
+            <div class="images">
+                <img src="data:image/png;base64,{transform_images(path + 'images/pltDeathsDiseaseYear.png').decode()}" alt="logo malaga tech" width="700">
+            </div>
+        """, unsafe_allow_html=True)
 
 elif select_section == "Datos":
 
@@ -248,4 +260,9 @@ elif select_section == "Datos":
                     st.write(f"Para su consulta hay una predicción de que habrá <span class='neg_mark'>{abs(prediction)}</span> muertes.", unsafe_allow_html=True)
                     st.write("Siempre tenga en cuenta un margen de error y que son predicciones a partir de los datos registrados en bases de datos públicas oficiales.")
                     st.write("El resultado no tienen ninguna validez legal y es meramente orientativa.")
-            
+    
+elif select_section == "Chatbot: Monath":
+
+    st.markdown("<h1 class='myh1'>Chatbot: Monath</h1>", unsafe_allow_html=True)
+
+    chatbot_input = st.text_input("Chatbot: Monath", "Hola!! Me lamo Monath y estoy aquí para ayudarte.", label_visibility="hidden")
