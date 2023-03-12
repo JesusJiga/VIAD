@@ -58,25 +58,36 @@ def get_prediction(dataframe, gender, age, community, province, disease, year):
     dataframe = dataframe.set_index('Year')
 
     ts = pd.Series(dataframe[column], index=dataframe.index, dtype='int')
+    
+    try:
+        # Ajustamos el modelo ARIMA utilizando la función auto_arima
+        model = auto_arima(ts, start_p=1, start_q=1,
+                        test='adf',       # Utilizamos el test de Dickey-Fuller aumentado
+                        max_p=3, max_q=3, # Valores máximos de p y q
+                        m=1,              # Frecuencia de la serie temporal (1 para anual)
+                        d=None,           # d se estima automáticamente por la función
+                        seasonal=False,   # No utilizamos componente estacional
+                        trace=True)
 
-    # Ajustamos el modelo ARIMA utilizando la función auto_arima
-    model = auto_arima(ts, start_p=1, start_q=1,
-                    test='adf',       # Utilizamos el test de Dickey-Fuller aumentado
-                    max_p=3, max_q=3, # Valores máximos de p y q
-                    m=1,              # Frecuencia de la serie temporal (1 para anual)
-                    d=None,           # d se estima automáticamente por la función
-                    seasonal=False,   # No utilizamos componente estacional
-                    trace=True)
+        # Ajustar el modelo ARIMA
+        model = ARIMA(ts, order=model.order)       
+        model_fit = model.fit()
 
-    # Ajustar el modelo ARIMA
-    model = ARIMA(ts, order=model.order)
-    model_fit = model.fit()
+        #Prediccion
+        covid_years = ['2020', '2021']
+        covid_disease = ['103', '104', '105']
+        if disease in covid_disease:
+            last_year = covid_years[0]
+        else:
+            last_year = ts.index.max()
+        
+        period = year - int(pd.Timestamp(last_year).strftime('%Y'))
 
-    #Prediccion rango de fechas
-    last_year = ts.index.max()
-    period = year - int(pd.Timestamp(last_year).strftime('%Y'))
+        index = pd.date_range(start=str(last_year), periods=period, freq='Y')
 
-    index = pd.date_range(start=str(last_year), periods=period, freq='Y')
-
-    prediction = model_fit.predict(start=index[0], end=index[-1])
-    return int(prediction.round(0)[-1])
+        prediction = model_fit.predict(start=index[0], end=index[-1])
+        return int(prediction.round(0)[-1]), False
+    except Exception:
+        return "", True
+    
+    

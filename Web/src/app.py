@@ -66,7 +66,7 @@ def load_css(file_name):
 
 ########## Configuración inicial ##########
 
-st.set_page_config(page_title="VIAD", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="VIAD", page_icon=None, layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
 path = get_path()
 mongodb_conection = start_conection()
@@ -114,6 +114,8 @@ elif select_section == "Datos":
 
     year = st.slider('Seleccione un año', min_value=get_min_year(), max_value=2050, value=2023, step=1, format="%d")
 
+    # TODO: Rango de años
+
     col1, col2  = st.columns(2)
 
     with col1:
@@ -156,51 +158,58 @@ elif select_section == "Datos":
 
         #Búsqueda datos reales
         if year <= get_max_year():
+            with st.spinner('Espere un momento...'):
+                year = str(pd.to_datetime(year, format='%Y')).split(sep=' ')[0]
 
-            year = str(pd.to_datetime(year, format='%Y')).split(sep=' ')[0]
-            # TODO: Rango de años
+                st.write("Los datos siguientes son los resultados de su consulta.")
+                st.write("En este caso los datos obtenidos son reales según los datos públicos de la página oficial del Instituto Nacional de Estadística.")
 
-            st.write("Los datos siguientes son los resultados de su consulta.")
-            st.write("En este caso los datos obtenidos son reales según los datos públicos de la página oficial del Instituto Nacional de Estadística.")
+                cursor, query = conection.get_historical_data(mongodb_client, year, community_key, province_key, disease_key, age_key)
 
-            cursor, query = conection.get_historical_data(mongodb_client, year, community_key, province_key, disease_key, age_key)
+                gender_column_name = ""
+                # Se define la cabecera personalizada 
+                if gender_key == 0:
+                    gender_column_name = 'Both Genders'
+                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+                elif gender_key == 1:
+                    gender_column_name = 'Men'
+                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+                elif gender_key == 2:
+                    gender_column_name = 'Women'
+                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
 
-            gender_column_name = ""
-            # Se define la cabecera personalizada 
-            if gender_key == 0:
-                gender_column_name = 'Both Genders'
-                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
-            elif gender_key == 1:
-                gender_column_name = 'Men'
-                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
-            elif gender_key == 2:
-                gender_column_name = 'Women'
-                headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+                data = []
 
-            data = []
+                # iteramos sobre el cursor y se agregan los valores a la lista
+                for document in cursor:
+                    row = [
+                        str(document['Year']).split(sep='-')[0],
+                        dictionaries.provinces[int(document['Province'])],
+                        dictionaries.diseases[int(document['Disease'])],
+                        dictionaries.ages[int(document['Age'])],
+                        document[gender_column_name]
+                    ]
+                    data.append(row)
 
-            # iteramos sobre el cursor y se agregan los valores a la lista
-            for document in cursor:
-                row = [
-                    str(document['Year']).split(sep='-')[0],
-                    dictionaries.provinces[int(document['Province'])],
-                    dictionaries.diseases[int(document['Disease'])],
-                    dictionaries.ages[int(document['Age'])],
-                    document[gender_column_name]
-                ]
-                data.append(row)
-
-            # Se crea el dataframe con los datos y las cabeceras personalizadas
-            df = pd.DataFrame(data, columns=headers)
-
-            # mostramos por pantalla
-            st.table(df)
+                # Se crea el dataframe con los datos y las cabeceras personalizadas
+                df = pd.DataFrame(data, columns=headers)
+                st.success('Lo tenemos!')
+                # mostramos por pantalla
+                st.table(df)
 
         #Predicción
         else:
-            data = causes_death_df.copy()
-            prediction = predictions.get_prediction(data, gender_key, age_key, community_key, province_key, disease_key, year)
-          
-            st.write(f"Para su consulta hay una predicción de que habrá <span class='neg_mark'>{abs(prediction)}</span> muertes.", unsafe_allow_html=True)
-            st.write("Siempre tenga en cuenta un margen de error y que son predicciones a partir de los datos registrados en bases de datos públicas oficiales.")
-            st.write("El resultado no tienen ninguna validez legal y es meramente orientativa.")
+            with st.spinner('Espere un momento...'):
+
+                data = causes_death_df.copy()
+                prediction, covid = predictions.get_prediction(data, gender_key, age_key, community_key, province_key, disease_key, year)
+            
+                if covid == True:
+                    e = RuntimeError('Está intentando predecir valores COVID.\nLamentablemente no disponemos de suficientes datos para el análisis y no podemos ofrecerle una predición en estos momentos.\nEsperamos poder hacerlo pronto.')
+                    st.exception(e)
+                else:
+                    st.success('Lo tenemos!')
+                    st.write(f"Para su consulta hay una predicción de que habrá <span class='neg_mark'>{abs(prediction)}</span> muertes.", unsafe_allow_html=True)
+                    st.write("Siempre tenga en cuenta un margen de error y que son predicciones a partir de los datos registrados en bases de datos públicas oficiales.")
+                    st.write("El resultado no tienen ninguna validez legal y es meramente orientativa.")
+            
