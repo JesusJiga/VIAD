@@ -1,5 +1,7 @@
 # **VIAD** 
 
+![Portada](https://github.com/JesusJiga/VIAD/blob/main/Resources/portada.png)
+
 ## **Introducción**
 VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y Big Data. Realizado por Jose Pérez Soler y Jesús Jiménez García.
 
