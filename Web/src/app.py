@@ -18,10 +18,6 @@ def get_path():
 def start_conection():
     return conection.start_conection(st.secrets['DB_PASSWORD'])
 
-@st.cache_resource
-def get_client():
-    return conection.get_client(mongodb_conection)
-
 #Carga el csv
 @st.cache_data
 def load_causes_death_df():
@@ -30,11 +26,28 @@ def load_causes_death_df():
 # Cargamos valores máximos y mínimos de los registros de la base de datos
 @st.cache_data
 def get_min_year():
-    return conection.get_min_year(mongodb_client)
+    return conection.get_min_year(mongodb_db_collection)
 
 @st.cache_data
 def get_max_year():
-    return conection.get_max_year(mongodb_client)
+    return conection.get_max_year(mongodb_db_collection)
+
+@st.cache_data
+def get_total_both_by_year():
+    return conection.get_total_both_by_year(mongodb_db_collection)
+
+@st.cache_data
+def get_total_women_by_year():
+    return conection.get_total_women_by_year(mongodb_db_collection)
+
+@st.cache_data
+def get_total_men_by_year():
+    return conection.get_total_men_by_year(mongodb_db_collection)
+
+@st.cache_data
+def get_total_both_by_province():
+    return conection.get_total_both_by_province(mongodb_db_collection)
+
 
 # Carga de la imagen de fondo
 @st.cache_data
@@ -68,9 +81,13 @@ def load_css(file_name):
 
 st.set_page_config(page_title="VIAD", page_icon=None, layout="centered", initial_sidebar_state="collapsed", menu_items=None)
 
+database = "VIAD"
+collection = "CausesDeath"
+
 path = get_path()
-mongodb_conection = start_conection()
-mongodb_client = get_client()
+mongodb_client = start_conection()
+mongodb_db = mongodb_client[database]
+mongodb_db_collection = mongodb_db[collection]
 causes_death_df = load_causes_death_df()
 
 load_css(path + 'css/viad.css')
@@ -102,6 +119,27 @@ if select_section == "Inicio":
 elif select_section == "Estadísticas":
     st.markdown("<h1 class='myh1'>Estadísticas</h1>", unsafe_allow_html=True)
 
+    both_genders = get_total_both_by_year()
+    women = get_total_women_by_year()
+    men = get_total_men_by_year()
+
+    # Convertir resultados a DataFrame
+    df_both_genders = pd.DataFrame.from_records(both_genders)
+    df_women = pd.DataFrame.from_records(women)
+    df_men = pd.DataFrame.from_records(men)
+
+    # Fusionar los resultados en un solo DataFrame
+    df_merged = pd.merge(df_both_genders, df_women, on='_id', how='outer').merge(df_men, on='_id', how='outer')
+    df_merged.columns = ['Year', 'Both Genders', 'Women', 'Men']
+    df_merged.fillna(0, inplace=True)
+
+    df_merged['Year'] = pd.to_datetime(df_merged['Year'], format='%Y-%m-%d')
+    df_merged.set_index('Year', inplace=True)
+
+    # Graficar
+    st.line_chart(df_merged)
+    st.markdown("Representación de las muertes totales a lo largo de los años")
+
 elif select_section == "Datos":
 
     st.markdown("<h1 class='myh1'>Consulta de datos</h1>", unsafe_allow_html=True)
@@ -113,8 +151,6 @@ elif select_section == "Datos":
     st.markdown("Cabe destacar que dichas predicciones no tienen en cuenta posibles futuras catastrofes naturales, guerras o cualquier causa fuera de conductas normales.", unsafe_allow_html=False)
 
     year = st.slider('Seleccione un año', min_value=get_min_year(), max_value=2050, value=2023, step=1, format="%d")
-
-    # TODO: Rango de años
 
     col1, col2  = st.columns(2)
 
@@ -164,7 +200,7 @@ elif select_section == "Datos":
                 st.write("Los datos siguientes son los resultados de su consulta.")
                 st.write("En este caso los datos obtenidos son reales según los datos públicos de la página oficial del Instituto Nacional de Estadística.")
 
-                cursor, query = conection.get_historical_data(mongodb_client, year, community_key, province_key, disease_key, age_key)
+                cursor, query = conection.get_historical_data(mongodb_db_collection, year, community_key, province_key, disease_key, age_key)
 
                 gender_column_name = ""
                 # Se define la cabecera personalizada 
@@ -173,10 +209,10 @@ elif select_section == "Datos":
                     headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
                 elif gender_key == 1:
                     gender_column_name = 'Men'
-                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Hombres']
                 elif gender_key == 2:
                     gender_column_name = 'Women'
-                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Ambos sexos']
+                    headers = ['Año', 'Provincia', 'Enfermedad', 'Edad', 'Mujeres']
 
                 data = []
 

@@ -5,12 +5,6 @@ from py import dictionaries
 def start_conection(key):
     return pymongo.MongoClient(f"mongodb+srv://JiGa:{key}@viad.b6yfn8g.mongodb.net/?retryWrites=true&w=majority")
 
-def get_client(conection):
-    database = "VIAD"
-    collection = "CausesDeath"
-
-    return conection[database][collection]
-
 def get_min_year(client):
     return int(pd.Timestamp(client.find({},{'Year':True}).sort('Year', pymongo.ASCENDING).limit(1)[0]['Year']).strftime('%Y'))
 
@@ -44,3 +38,101 @@ def get_historical_data(client, year, community, province, disease, age):
         query['Age'] = str(age)
 
     return (client.find(query) , query)
+
+def get_total_both(client):
+    resultado = client.aggregate([
+                    {
+                        "$project": {
+                            "Both Genders Numeric": {"$toInt": "$Both Genders"}
+                        }
+                    },
+                    {
+                        "$group": {
+                            "_id": None,
+                            "total": {"$sum": "$Both Genders Numeric"}
+                        }
+                    }])
+    return resultado
+
+def get_total_men(client):
+    resultado = client.aggregate([
+                    {
+                        "$project": {
+                            "Men Numeric": {"$toInt": "$Men"}
+                        }
+                    },
+                    {
+                        "$group": {
+                            "_id": None,
+                            "total": {"$sum": "$Men Numeric"}
+                        }
+                    }])
+    return resultado
+
+def get_total_women(client):
+    resultado = client.aggregate([
+                    {
+                        "$project": {
+                            "Wome Numeric": {"$toInt": "$Women"}
+                        }
+                    },
+                    {
+                        "$group": {
+                            "_id": None,
+                            "total": {"$sum": "$Women Numeric"}
+                        }
+                    }])
+    return resultado
+
+def get_total_both_by_year(client):
+    resultado = client.aggregate([
+        {
+            "$project": {
+                "Both Genders Numeric": {"$toInt": "$Both Genders"},
+                "Year": "$Year"
+            }
+        },
+        {
+            "$group": {
+                "_id": "$Year",
+                "total": {"$sum": "$Both Genders Numeric"}
+            }
+        }
+    ])
+    return list(resultado)
+
+def get_total_women_by_year(client):
+    resultado = client.aggregate([
+        {
+            "$project": {
+                "Women Numeric": {"$toInt": "$Women"},
+                "Year": "$Year"
+            }
+        },
+        {
+            "$group": {
+                "_id": "$Year",
+                "total": {"$sum": "$Women Numeric"}
+            }
+        }
+    ])
+    return list(resultado)
+
+def get_total_men_by_year(client):
+    resultado = client.aggregate([
+        {
+            "$project": {
+                "Men Numeric": {"$toInt": "$Men"},
+                "Year": "$Year"
+            }
+        },
+        {
+            "$group": {
+                "_id": "$Year",
+                "total": {"$sum": "$Men Numeric"}
+            }
+        }
+    ])
+    return list(resultado)
+
+    
