@@ -5,7 +5,11 @@ VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y B
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-[Presentación Genially](https://view.genial.ly/6408bf1d1221aa0018adfbb3/presentation-proyecto-final-master-salud)
+## Enlaces
+
+- [Presentación Genially](https://view.genial.ly/6408bf1d1221aa0018adfbb3/presentation-proyecto-final-master-salud)
+
+- [VIAD - Streamlit](https://jesusjiga-viad-websrcapp-hn890g.streamlit.app/)
 
 ## **Justificación y descripción del proyecto.**
 
