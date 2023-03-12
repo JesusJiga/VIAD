@@ -1,5 +1,3 @@
-# **VIAD** 
-
 ![Portada](https://github.com/JesusJiga/VIAD/blob/main/Resources/portada.png)
 
 ## **Introducción**
