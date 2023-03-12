@@ -5,6 +5,8 @@ VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y B
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
+![Presentación](https://view.genial.ly/6408bf1d1221aa0018adfbb3/presentation-proyecto-final-master-salud)
+
 ## **Justificación y descripción del proyecto.**
 
 ### **Justificación:**
@@ -42,16 +44,22 @@ del laboratorio previamiente a su uso y estas claves tendrán que modificarse.
 
 ## **Exploración y visualización de los datos.**
 
+![Visualización](https://github.com/JesusJiga/VIAD/blob/main/Web/src/images/pltDeathsSex2021.png)
+
 ## **Preparación de los datos para los algoritmos de Machine Learning.**
+
+![Preparación](https://github.com/JesusJiga/VIAD/blob/main/Resources/Preparacion.png)
 
 ## **Entrenamiento del modelo y comprobación del rendimiento.**
 
-## **Procesamiento de Lenguaje Natural**
-
-![Monath](https://github.com/JesusJiga/VIAD/blob/main/Resources/Monath.png)
+![Entrenamiento](https://github.com/JesusJiga/VIAD/blob/main/Resources/Entrenamiento.png)
 
 ## **Aplicación web.**
 
 ![InicioWeb](https://github.com/JesusJiga/VIAD/blob/main/Resources/InicioWeb.png)
+
+## **Procesamiento de Lenguaje Natural**
+
+![Monath](https://github.com/JesusJiga/VIAD/blob/main/Resources/Monath.png)
 
 ## **Conclusiones.**
