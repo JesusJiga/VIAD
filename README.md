@@ -11,7 +11,7 @@ VIAD (Vigilante inteligente atenuador de decesos) es el proyecto final de IA y B
 
 - [VIAD - Streamlit](https://jesusjiga-viad-websrcapp-hn890g.streamlit.app/)
 
-https://github.com/JesusJiga/VIAD/blob/main/Resources/Video.mp4
+- [Video](https://github.com/JesusJiga/VIAD/blob/main/Resources/Video.mp4)
 
 ## **Justificación y descripción del proyecto.**
 
